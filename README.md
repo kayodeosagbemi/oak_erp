@@ -11,3 +11,7 @@ Which kind of organizations can use Oak ERP?
 1. An asset management company. 
 2. Social media marketers and enterpreneurs who sell on social platforms like Instagram, Whatsapp, Facebook etc who want to display the products, manage customers, orders and collect payments as well as have a record of the transactions in one place all without the hassle of setting up your own infrastructure
 3. Sellers of educational content who want controlled/paid access to their content etc
+4. Pharmaceutical manufacturing companies
+
+Current state
+1. We support asset management or investment club companies
