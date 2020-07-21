@@ -1,0 +1,38 @@
+Innovative Software Systems
+Oak ERP
+Entity Relation Model Design statement
+Peaceful Peace (“The Company”) offers different investment plans to their customers who are called “Investor”. 
+
+An investor can make an investment (“Investment”) under one  investment plans at a time. But may have many investments concurrently. 
+
+What are the investment plans?
+There are currently (as at 20-July-2020) four (4) investment plans in Peaceful Peace Limited. They are:
+Gold (Profit of 8% every 2 months) (Tenor of 2 months)
+Diamond (Profit of 12% every 2 months) (Tenor of 4 months)
+Platinum (Profit of 15% every 2 months) (Tenor of 8 months)
+Premium (Profit of 20% every 2 months) (Tenor of one year i.e. 12 months)
+
+When should profit be paid for an investment plan?
+An investment plan can either pay out (make due) the profit exactly every 2 months or defer the payment till maturity of the investment. There is a setting that controls this. See “Payment Schedule” below for more on this.
+
+Is the tenor of an investment flexible or must it match the tenor of the chosen plan exactly?
+An investment plan can optionally allow the investment to have a lesser tenor than the official tenor of the investment plan but not equal to the next lesser investment plan.
+
+
+An Investment has an investment reference, a principal amount in Kobo (or appropriate base unit of the currency), a currency, a tenor, a tenor unit (days, months, weeks, years) , a start date, an interest, a payment schedule (“Payment Schedule”), and a status (Active|Expired). 
+
+When an investment is started, an investment agreement document is signed and sent to the investor as an evidence.
+
+Can an investment be rolled over?
+An investment can be rolled over at maturity into another investment with another tenor. In this case a new record is created with it's own ID and the “old/former” investment's ID becomes the related investment ID of the new investment.
+
+A Payment Schedule lists the dates, amounts to be paid, the kind of the schedule (payin|payout) and payment status (Paid|Missed|Canceled) of that amount to be paid on the investment.
+The investor makes a payment to initiate their investment. The date on which payment is made is the actual start date of the investment.
+
+Can an investment be pre-terminated?
+An investor can optionally pre-terminate their investment. (NB: nothing done on the ER model for this yet)
+
+What accounting entries should be recorded on the system? 
+Or 
+Will accounting entries be stored on the system?
+A payment entry is made from a reference (account) to another reference(account) for different purposes such as Investment principal payment, schedule  payment, payment of referrers fees/rewards, salary payment.
