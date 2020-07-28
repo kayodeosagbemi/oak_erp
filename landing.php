@@ -1,6 +1,35 @@
 <?php
+session_start();
+//include_once "includes/Database.php";
+include_once 'includes/User.class.php';
+use com\innovativesoftwaresystemsng\oakerp\model;
+
 $TENANT_NAME="Peaceful Tenant"; 
 $COPYRIGHT_YEAR=date("Y"); //TODO: Get the current year
+if (isset($_POST['btnSignin']))
+{
+  $usr = $_POST['username'];
+  $pwd=$_POST['password'];
+  
+  $isAuthenticated = User::isAuthenticated($usr, $pwd);
+
+  if ($isAuthenticated == FALSE)
+  {
+      header("Location: index.php?action=logout"); /* Redirect browser */
+        exit();
+  } else
+  {
+        //Redirect to the landing page; which will be done naturally because the action of th eformis landing.php
+        $usrId=0;
+        $foundUser= new User($usrId);
+        $foundUser.initByUsername($usr);
+        //get role of this user
+        $role = $user->role;
+        $_SESSION["USER_ROLE"] = $foundUser;
+        $_SESSION['USER_NAME'] = $foundUser->getSurname() . " " . $foundUser->getMiddlename() . " " . $foundUser->getFirstname();
+
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
