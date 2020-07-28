@@ -6,8 +6,8 @@
  * and open the template in the editor.
  */
 
-namespace com\innovativesoftwaresystemsng\oakerp\model;
-use PDO;
+//namespace com\innovativesoftwaresystemsng\oakerp\model;
+//use PDO;
 /**
  * Description of User
  *
@@ -21,7 +21,7 @@ class User {
         //Id parameterized
         if ($id > 0)
         {
-             createUserById($id);
+             $this->createUserById($id);
         
         }
         $this->isChanged=false;
@@ -32,19 +32,19 @@ class User {
         $this->conn=NULL;
     }
     
-    public function initByUsername($username) 
+    public function initByUserid($usr) 
     {
         try {
-             $conn = new PDO("mysql:host=localhost;dbname=oak_erp_db", "root", "");
+            $this->conn = new PDO("mysql:host=localhost;dbname=oak_erp_db", "root", "");
             $sql_auth_usr_pwd="SELECT * FROM user ".
                     "WHERE username=:username";
-            $stmt = $conn->prepare($sql_auth_usr_pwd);
-            $stmt->bindParam(":username", $username);
+            $stmt =  $this->conn->prepare($sql_auth_usr_pwd);
+            $stmt->bindParam(":username", $usr);
             $stmt->execute();
             $result = $stmt->fetchall();
             foreach($result as $row)
             {
-                $this->setId($row["id"]);
+                $this->setId($row["Id"]);
                 $this->setUsername($row['username']);
                 $this->setEmail($row['email']);
                 $this->setPassword($row['password']);
@@ -57,7 +57,10 @@ class User {
                 $this->setCreateTime($row['create_time']);
             }
         } catch (Exception $ex) {
-               $this->conn = NULL;
+              
+        } finally
+        {
+             $this->conn = NULL;
         }
     }
     private $conn = null;
@@ -117,6 +120,14 @@ class User {
         return $this->middlename;
     }
     private $firstname;
+    public function setFirstname($fn)
+    {
+        $this->firstname=$fn;
+    }
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
     private $title;
     public function setTitle($t)
     {
@@ -167,18 +178,56 @@ class User {
     {
         try {
              $conn = new PDO("mysql:host=localhost;dbname=oak_erp_db", "root", "");
-            $sql_auth_usr_pwd="SELECT * FROM user ".
+            $sql_auth_usr_pwd="SELECT count(*) as numuser FROM user ".
                     "WHERE username=:username and password=:password";
             $stmt = $conn->prepare($sql_auth_usr_pwd);
             $stmt->bindParam(":username", $username);
             $stmt->bindParam(":password", $password);
             $stmt->execute();
             $result = $stmt->fetchall();
-             return count($result) > 0;
+            
+            foreach($result as $row)
+            {
+                if ($row['numuser'] > 0)
+                    return TRUE;
+                else 
+                    return FALSE;
+            }
+             return FALSE;
         } catch (Exception $ex) {
-               $this->conn = NULL;
+               
+        } finally
+        {
+             $conn = NULL;
         }
-       return false;
+       return FALSE;
        
+    }
+
+    /** Get all users in array */
+    static public function getAllUsers()
+    {
+        $sql_all_usrs="select * from user";
+        $userArray =null;//Init to null
+        try {
+            $conn = new PDO("mysql:host=localhost;dbname=oak_erp_db", "root", "");
+           
+           $stmt = $conn->query($sql_all_usrs);
+           $result=$stmt->fetchAll();
+
+           foreach($result as $row)
+           {
+               $usrObj =new User(0);
+               $usrObj->initByUserid($row['Id']);
+               $userArray[] = $usrObj;               
+           }
+            
+       } catch (Exception $ex) {
+              
+       } finally
+       {
+            $this->conn = NULL;
+       }
+      return $userArray;
     }
 }

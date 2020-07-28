@@ -4,7 +4,8 @@ if (isset($_GET['action']))
     $action = strtolower($_GET['action']);
     if ($action =="logout")
     {
-      session_destroy();
+        unset($_SESSION);
+      //session_destroy();
     }
 }
 
