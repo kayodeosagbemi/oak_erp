@@ -226,7 +226,7 @@ class User {
               
        } finally
        {
-            $this->conn = NULL;
+            $conn = NULL;
        }
       return $userArray;
     }
