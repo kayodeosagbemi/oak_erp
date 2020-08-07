@@ -1,12 +1,10 @@
 <?php
 session_start();
-//include_once "includes/Database.php";
 include_once 'includes/User.class.php';
 include_once 'includes/Investor.class.php';
 include_once 'includes/Investment.class.php';
-//use com\innovativesoftwaresystemsng\oakerp\model;
 
-$TENANT_NAME="Peaceful Tenant"; 
+$_SESSION['TENANT_NAME']="Peaceful Tenant"; 
 $COPYRIGHT_YEAR=date("Y"); //TODO: Get the current year
 if (isset($_POST['btnSignin']))
 {
@@ -26,7 +24,7 @@ $isAuthenticated = User::isAuthenticated($usr, $pwd);
         $foundUser= new User($usrId);
         $foundUser->initByUserid($usr);
         $_SESSION["USER_ROLE"] = $foundUser->getRoleId();
-        $_SESSION['USER_NAME'] = $foundUser->getSurname() . " " . $foundUser->getMiddlename() . " " . $foundUser->getFirstname();
+        $_SESSION['USER_FULL_NAME'] = $foundUser->getSurname() . " " . $foundUser->getMiddlename() . " " . $foundUser->getFirstname();
 
   }
 }
@@ -40,7 +38,7 @@ $isAuthenticated = User::isAuthenticated($usr, $pwd);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?php echo $TENANT_NAME; ?>  | </title>
+    <title><?php echo $_SESSION['TENANT_NAME']; ?>  | </title>
 
     <!-- Bootstrap -->
     <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -77,7 +75,7 @@ $isAuthenticated = User::isAuthenticated($usr, $pwd);
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
-                <h2><?php echo $foundUser->getSurname() . " " . $foundUser->getMiddlename() . " " . $foundUser->getFirstname(); ?></h2>
+                <h2><?php echo $_SESSION['USER_FULL_NAME']; ?></h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -93,7 +91,8 @@ $isAuthenticated = User::isAuthenticated($usr, $pwd);
                     <ul class="nav child_menu">
                       <li><a href="index.php">Login page</a></li>
                       <li><a href="landing.php">Dashboard</a></li>
-                      <li><a href="investor.php">New Investor</a></li>
+                      <li><a href="newinvestor.php">New Investor</a></li>
+                      <!-- <li><a href="form.html">New Investor</a></li> -->
                     </ul>
                   </li>
                   <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
@@ -199,7 +198,7 @@ $isAuthenticated = User::isAuthenticated($usr, $pwd);
               <a data-toggle="tooltip" data-placement="top" title="Lock">
                 <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
               </a>
-              <a data-toggle="tooltip" data-placement="top" title="Logout">
+              <a data-toggle="tooltip" data-placement="top" title="Logout" href="index.php?action=logout">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
             </div>
@@ -230,7 +229,7 @@ $isAuthenticated = User::isAuthenticated($usr, $pwd);
                       </a>
                     </li>
                     <li><a href="javascript:;">Help</a></li>
-                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                    <li><a href="index.php?action=logout"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                   </ul>
                 </li>
 
@@ -345,7 +344,7 @@ $isAuthenticated = User::isAuthenticated($usr, $pwd);
             </div>
             <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
               <span class="count_top"><i class="fa fa-user"></i> Payments Due Today</span>
-              <div class="count"><?php echo "TODO: 200"; ?></div>
+              <div class="count"><?php echo Investment::getTotalDueToday(); ?></div>
               <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
             </div>
           </div>
@@ -654,7 +653,7 @@ $isAuthenticated = User::isAuthenticated($usr, $pwd);
                       <li><i class="fa fa-bar-chart"></i><a href="#">Auto Renewal</a> </li>
                       <li><i class="fa fa-line-chart"></i><a href="#">Achievements</a>
                       </li>
-                      <li><i class="fa fa-area-chart"></i><a href="#">Logout</a>
+                      <li><i class="fa fa-area-chart"></i><a href="index.php?action=logout">Logout</a>
                       </li>
                     </ul>
 

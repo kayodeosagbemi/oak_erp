@@ -39,4 +39,12 @@ class Investment {
     
         return $count;
     }
+
+    static public function getTotalDueToday() 
+    {
+        $referenceDate='';
+        //TODO: Implement this and possible even change the method signature to be more
+        //useful
+        return 0;
+    }
 }
