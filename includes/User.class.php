@@ -21,7 +21,7 @@ class User {
         //Id parameterized
         if ($id > 0)
         {
-             $this->createUserById($id);
+             $this->initByUserid($id);
         
         }
         $this->isChanged=false;
@@ -32,14 +32,14 @@ class User {
         $this->conn=NULL;
     }
     
-    public function initByUserid($usr) 
+    public function initByUserid($usrId) 
     {
         try {
             $this->conn = new PDO("mysql:host=localhost;dbname=oak_erp_db", "root", "");
             $sql_auth_usr_pwd="SELECT * FROM user ".
-                    "WHERE username=:username";
+                    "WHERE Id=:id";
             $stmt =  $this->conn->prepare($sql_auth_usr_pwd);
-            $stmt->bindParam(":username", $usr);
+            $stmt->bindParam(":id", $usrId);
             $stmt->execute();
             $result = $stmt->fetchall();
             foreach($result as $row)
@@ -169,11 +169,7 @@ class User {
     {
         $this->isChanged=$isChanged;
     }
-    private function createUserById($id)
-    {
-        $sql_select_by_id="SELECT * FROM user WHERE ID=?";
-        
-    }
+   
     static public function isAuthenticated($username, $password)
     {
         try {
@@ -229,5 +225,10 @@ class User {
             $conn = NULL;
        }
       return $userArray;
+    }
+
+    public function save()
+    {
+        //TODO: Get all the variables and send to the database via aan nninsert or stored procedure call
     }
 }
