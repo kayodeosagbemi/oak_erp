@@ -374,4 +374,34 @@ PARAMS;
         }
     }
 
+    function generateReferralCode($surname, $phone) 
+    {
+        $sql="select fn_generate_ref_code(:surname, :mobile) as referralCode";
+        $gRefCode="";
+        try {
+            $this->connObj = new PDO("mysql:host=localhost;dbname=oak_erp_db", "root", "");
+            
+            $stmt =  $this->conn->prepare($sql);
+            $stmt->bindParam(":surname", $surname);
+            $stmt->bindParam(":mobile", $phone);
+            $result = $stmt->exec();
+            if (count($result) > 0)
+            {
+                foreach($result as $rs)
+                {
+                    $gRefCode = $rs[0];                    
+                }
+                return  $gRefCode;
+            }
+            return  $gRefCode;
+        } catch(Exception $ex)
+        {
+            // $ex->getMessage();
+        } finally{
+            
+        }
+
+        return  $gRefCode;
+    }
+
 }

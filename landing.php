@@ -23,6 +23,7 @@ $isAuthenticated = User::isAuthenticated($usr, $pwd);
         $usrId=0;
         $foundUser= new User($usrId);
         $foundUser->initByUserid($usr);
+        $_SESSION['USER_ID']=$foundUser->getId();
         $_SESSION["USER_ROLE"] = $foundUser->getRoleId();
         $_SESSION['USER_FULL_NAME'] = $foundUser->getSurname() . " " . $foundUser->getMiddlename() . " " . $foundUser->getFirstname();
 

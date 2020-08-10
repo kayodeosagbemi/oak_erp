@@ -1,7 +1,7 @@
 <?php
 session_start();
 include_once 'includes/Investor.class.php';
-
+include_once 'includes/Database.php';
 //Declare all form fields below
 $txtSurname="";
 $txtMiddlename="";
@@ -11,6 +11,9 @@ $txtEmail="";
 $txtEmail2="";
 $txtPwd="";
 $txtPwd2="";
+$txtTitle="";
+$txtDob = "";
+$txtGender="";
 $errorMessageArr = array();
 
 if (isset($_POST['btnCancel']))
@@ -29,32 +32,62 @@ if (isset($_POST['btnCancel']))
 
 if (isset($_POST['btnCreateInvestor']))
 {
-  //get the information from the form fields
-  $txtSurname   = $_POST["txtSurname"];
-  $txtFirstname = $_POST["txtFirstname"];
-  $txtMobile    = $_POST["txtMobile"];
-  $txtEmail     = $_POST["txtEmail"];
-  $txtEmail2    = $_POST["txtEmail2"];
-  $txtPwd       = $_POST["txtPwd"];
-  $txtPwd2      = $_POST["txtPwd2"];
-  $txtMiddlename= $_POST["txtMiddlename"];
+  echo "<b>DEBUG::Submit button clicked</b>";
+  //get the information from the form fields 
+  $txtEmail     = input("txtEmail");
+  $txtEmail2    = input("txtEmail2");
+  $txtPwd       = input("txtPwd");
+  $txtPwd2      = input("txtPwd2");
   //do server-side validation
     //Check email and password are matching
     if ($txtEmail != $txtEmail2)
     {
       //
-      $errorMessageArr[] = "The email addresses don't match.";
+      echo "<b>DEBUG::The EMail do not match</b>";
+      $errorMessageArr[] = "<p>The email addresses don't match.</p>";
     }
     if ($txtPwd != $txtPwd2)
     {
-      $errorMessageArr[] = "The password you entered don't match.";
+      print("<b>DEBUG::The EMail do not match</b>");
+      $errorMessageArr[] = "<p>The password you entered don't match.</p>";
     }
-
+    echo "<b>DEBUG::About to fill investor Object</b>";
     if (count($errorMessageArr) == 0) //This means there are no errors because the array of error messages is zero.
     {
       //Create an instance of the investor class
       $investorObj = new Investor();
-      $investorObj->setSurname($txtSurname);
+      $investorObj->setSurname(input("txtSurname"));
+      $investorObj->setMiddlename(input("txtMiddlename"));
+      $investorObj->setFirstname(input('txtFirstname'));
+      $investorObj->setMobilePhoneNumber(input('txtMobile'));
+      $investorObj->setPassword(input("txtPwd"));
+      $investorObj->setUsername(input('txtEmail'));
+      $investorObj->setCreateTime(date('Y-m-d H:i:s'));
+      $investorObj->setTitle(input('txtTitle'));
+      $investorObj->setDateOfBirth(input('txtDob'));
+      $investorObj->setGender(input('txtGender'));
+      $investorObj->setResidentialAddress(input('txtResidentialAddress'));
+      $investorObj->setCountryOfResidence(input('txtCountry'));
+      $investorObj->setCreatedByUserId($_SESSION['USER_ID']);
+      $investorObj->setInvestorReferralCode($investorObj->generateReferralCode(input("txtSurname"), input("txtMobile")));
+      $investorObj->setETLId(NULL);
+      $investorObj->setEtlCreateTime(NULL);
+      $investorObj->setCreationApprovedByUserId($_SESSION['USER_ID']);
+      $investorObj->setCreationApprovedByUserId(date('Y-m-d H:i:s'));
+      $investorObj->setRecordStatus(1);
+      $investorObj->setReferrerId(NULL);
+
+      $is_saved= FALSE;
+
+      $is_saved = $investorObj->save();
+
+      if ($is_saved)
+      {
+          //Show a prompt here.
+      } else
+      {
+        $errorMessageArr[] = "<p>Could not save the investor details.</p>";
+      }
     }
 }
 
@@ -272,8 +305,15 @@ if (isset($_POST['btnCreateInvestor']))
 
                     <form class="form-horizontal form-label-left" novalidate method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                       <span class="section">Bio-Data</span>
-
                       <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="txtTitle">Title
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <!-- <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="1" name="name" placeholder="Surname" required="required" type="text"> -->
+                          <input id="txtTitle" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="1" name="txtTitle" placeholder="Mr., Mrs., Miss" type="text" value="<?php echo $txtTitle; ?>">
+                        </div>
+                      </div>
+                      <div class="item form-group">                        
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="txtSurname">Surname <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -320,7 +360,7 @@ if (isset($_POST['btnCreateInvestor']))
                       <div class="item form-group">
                         <label for="txtPwd2" class="control-label col-md-3 col-sm-3 col-xs-12">Repeat Password</label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="txtPwd2" type="password" name="txtPwd2" data-validate-linked="password" class="form-control col-md-7 col-xs-12" required="required">
+                          <input id="txtPwd2" type="password" name="txtPwd2" data-validate-linked="txtPwd" class="form-control col-md-7 col-xs-12" required="required">
                         </div>
                       </div>
                       <div class="item form-group">
@@ -329,7 +369,30 @@ if (isset($_POST['btnCreateInvestor']))
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <input type="tel" id="txtMobile" name="txtMobile" required="required" data-validate-length-range="8,20" class="form-control col-md-7 col-xs-12" value="<?php echo $txtMobile; ?>">
                         </div>
-                      </div>                      
+                      </div> 
+                      <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="txtDob">Date of Birth
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input id="txtDob" class="form-control col-md-7 col-xs-12" name="txtDob" placeholder="1990-01-28" type="date" value="<?php echo $txtDob; ?>">
+                        </div>
+                      </div>    
+                      <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="txtGender">Gender
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <div class="row">
+                            <div class="btn-group" data-toggle="buttons">
+                              <label class="btn btn-default">
+                                <input type="radio" name="txtGender" id="M" value="M" required> Male
+                              </label>
+                              <label class="btn btn-default">
+                                <input type="radio" name="txtGender" id="F" value="F" required> Female
+                              </label>
+                            </div>
+                          </div>
+                         </div>
+                      </div>                                         
                       <div class="ln_solid"></div>
                       <div class="form-group">
                         <div class="col-md-6 col-md-offset-3">
