@@ -18,15 +18,16 @@ $errorMessageArr = array();
 
 if (isset($_POST['btnCancel']))
 {
+  echo "<h1>HELLLOOOOOOOOOOOOOOOOOOOOOOOOOO!!!</h1>";
   //Empty all the variables.
-  $txtSurname="";
-  $txtMiddlename="";
-  $txtFirstname="";
-  $txtMobile="";
-  $txtEmail="";
-  $txtEmail2="";
-  $txtPwd="";
-  $txtPwd2="";
+  // $txtSurname="";
+  // $txtMiddlename="";
+  // $txtFirstname="";
+  // $txtMobile="";
+  // $txtEmail="";
+  // $txtEmail2="";
+  // $txtPwd="";
+  // $txtPwd2="";
 }
 
 

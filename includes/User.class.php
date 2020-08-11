@@ -37,9 +37,40 @@ class User {
         try {
             $this->conn = new PDO("mysql:host=localhost;dbname=oak_erp_db", "root", "");
             $sql_auth_usr_pwd="SELECT * FROM user ".
-                    "WHERE Id=:id";
+                    "WHERE id=:id";
             $stmt =  $this->conn->prepare($sql_auth_usr_pwd);
             $stmt->bindParam(":id", $usrId);
+            $stmt->execute();
+            $result = $stmt->fetchall();
+            foreach($result as $row)
+            {
+                $this->setId($row["Id"]);
+                $this->setUsername($row['username']);
+                $this->setEmail($row['email']);
+                $this->setPassword($row['password']);
+                $this->setSurname($row['surname']);
+                $this->setFirstname($row['firstname']);
+                $this->setMiddlename($row['middlename']);
+                $this->setTitle($row['title']);
+                $this->setRoleId($row['roleId']);
+                $this->setReferralCode($row['referralCode']);
+                $this->setCreateTime($row['create_time']);
+            }
+        } catch (Exception $ex) {
+              
+        } finally
+        {
+             $this->conn = NULL;
+        }
+    }
+    public function initByUserName($usrId) 
+    {
+        try {
+            $this->conn = new PDO("mysql:host=localhost;dbname=oak_erp_db", "root", "");
+            $sql_auth_usr_pwd="SELECT * FROM user ".
+                    "WHERE username=:username";
+            $stmt =  $this->conn->prepare($sql_auth_usr_pwd);
+            $stmt->bindParam(":username", $usrId);
             $stmt->execute();
             $result = $stmt->fetchall();
             foreach($result as $row)

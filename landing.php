@@ -22,7 +22,7 @@ $isAuthenticated = User::isAuthenticated($usr, $pwd);
         //Redirect to the landing page; which will be done naturally because the action of th eformis landing.php
         $usrId=0;
         $foundUser= new User($usrId);
-        $foundUser->initByUserid($usr);
+        $foundUser->initByUserName($usr);
         $_SESSION['USER_ID']=$foundUser->getId();
         $_SESSION["USER_ROLE"] = $foundUser->getRoleId();
         $_SESSION['USER_FULL_NAME'] = $foundUser->getSurname() . " " . $foundUser->getMiddlename() . " " . $foundUser->getFirstname();
